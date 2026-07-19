@@ -104,8 +104,7 @@
       background: #0F1512;
       border-radius: 2px;
       flex-shrink: 0;
-      /* TODO: replace with actual cover art */
-      background-image: linear-gradient(135deg, #2A3B33 0%, #0F1512 100%);
+      background-image: url('release-cover.jpg');
       background-size: cover;
       background-position: center;
     }
@@ -203,7 +202,8 @@
     }
 
     /* --- Accessibility & motion --- */
-    a:focus-visible {
+    a:focus-visible,
+    button:focus-visible {
       outline: 2px solid var(--accent);
       outline-offset: 4px;
       border-radius: 2px;
@@ -211,6 +211,78 @@
 
     @media (prefers-reduced-motion: reduce) {
       * { transition: none !important; }
+    }
+
+    /* --- Release platform picker --- */
+    button.release {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 100%;
+      font: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .platform-dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      margin: 0;
+      border: 1px solid var(--hairline-strong);
+      border-radius: 4px;
+      background: var(--bg-soft);
+      color: var(--ink);
+      padding: 0;
+      width: min(320px, calc(100% - 48px));
+    }
+
+    .platform-dialog::backdrop {
+      background: rgba(15, 21, 18, 0.7);
+    }
+
+    .platform-dialog-inner {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .platform-dialog-title {
+      font-family: 'Fraunces', serif;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .platform-option {
+      display: block;
+      padding: 14px 16px;
+      border: 1px solid var(--hairline);
+      border-radius: 4px;
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 15px;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .platform-option:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .platform-dialog-close {
+      margin-top: 4px;
+      background: none;
+      border: none;
+      color: var(--ink-muted);
+      font-size: 13px;
+      cursor: pointer;
+      padding: 8px 0 0;
+      text-align: left;
+    }
+
+    .platform-dialog-close:hover {
+      color: var(--ink);
     }
   </style>
 </head>
@@ -221,16 +293,25 @@
       <p class="eyebrow">Musician · Denver, CO</p>
     </header>
 
-    <!-- Latest release card. Update href, art, and title with each release. -->
-    <a class="release" href="#" target="_blank" rel="noopener">
+    <!-- Latest release card. Update title/art with each release; platform links live in the dialog below. -->
+    <button class="release" type="button" id="release-trigger" aria-haspopup="dialog">
       <div class="release-art" aria-hidden="true"></div>
       <div class="release-meta">
         <div class="release-label">New release</div>
-        <div class="release-title">Song Title</div>
+        <div class="release-title">Chaos in Paradise</div>
         <div class="release-sub">Out now on all platforms</div>
       </div>
       <span class="release-arrow" aria-hidden="true">→</span>
-    </a>
+    </button>
+
+    <dialog class="platform-dialog" id="release-dialog">
+      <div class="platform-dialog-inner">
+        <p class="platform-dialog-title">Listen on</p>
+        <a class="platform-option" href="https://open.spotify.com/track/3W0GhD7SJWn71XD21dLKTN?si=47f9b753cb3c47a2" target="_blank" rel="noopener">Spotify</a>
+        <a class="platform-option" href="https://music.apple.com/us/album/chaos-in-paradise-single/6782432609" target="_blank" rel="noopener">Apple Music</a>
+        <button class="platform-dialog-close" type="button">Cancel</button>
+      </div>
+    </dialog>
 
     <section class="group">
       <div class="group-label">Listen</div>
@@ -267,5 +348,28 @@
       <span>Denver, CO</span>
     </footer>
   </main>
+
+  <script>
+    var releaseTrigger = document.getElementById('release-trigger');
+    var releaseDialog = document.getElementById('release-dialog');
+
+    releaseTrigger.addEventListener('click', function () {
+      releaseDialog.showModal();
+    });
+
+    releaseDialog.querySelector('.platform-dialog-close').addEventListener('click', function () {
+      releaseDialog.close();
+    });
+
+    releaseDialog.addEventListener('click', function (event) {
+      if (event.target === releaseDialog) releaseDialog.close();
+    });
+
+    releaseDialog.querySelectorAll('.platform-option').forEach(function (link) {
+      link.addEventListener('click', function () {
+        releaseDialog.close();
+      });
+    });
+  </script>
 </body>
 </html>
