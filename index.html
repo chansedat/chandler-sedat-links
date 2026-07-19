@@ -4,11 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Chandler Sedat</title>
-  <meta name="description" content="Musician. Denver, CO." />
+  <meta name="description" content="Musician." />
 
   <!-- Open Graph (what shows when links are pasted into iMessage, Instagram, etc.) -->
   <meta property="og:title" content="Chandler Sedat" />
-  <meta property="og:description" content="Musician. Denver, CO." />
+  <meta property="og:description" content="Musician." />
   <meta property="og:type" content="website" />
   <!-- TODO: swap for real og image once uploaded -->
   <meta property="og:image" content="/og.jpg" />
@@ -22,19 +22,28 @@
 
   <style>
     :root {
-      --bg: #1E2924;
-      --bg-soft: #253430;
-      --ink: #F0EBDD;
-      --ink-muted: #8B8878;
-      --accent: #D4A24C;
-      --hairline: rgba(240, 235, 221, 0.12);
-      --hairline-strong: rgba(240, 235, 221, 0.25);
+      --bg-1: #2B0F2E;
+      --bg-2: #3D1018;
+      --bg-3: #0E1030;
+      --bg-4: #14262B;
+      --ink: #F5EAD5;
+      --panel: rgba(12, 6, 14, 0.42);
+      --panel-strong: rgba(9, 5, 12, 0.66);
+      --accent: #FF6FB0;
+      --accent-deep: #FF3E9A;
+      --accent-magenta: #FF5E3A;
+      --ink-on-accent: #1D0714;
+      --hairline: rgba(245, 234, 213, 0.14);
+      --hairline-strong: rgba(245, 234, 213, 0.30);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html {
+      background: #150A1B;
+    }
+
     html, body {
-      background: var(--bg);
       color: var(--ink);
       font-family: 'Inter', -apple-system, system-ui, sans-serif;
       -webkit-font-smoothing: antialiased;
@@ -43,14 +52,44 @@
     }
 
     body {
-      padding: 40px 24px 60px;
+      padding: 32px 16px 48px;
       display: flex;
       justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, var(--bg-1), var(--bg-2), var(--bg-3), var(--bg-4), var(--bg-1));
+      background-size: 320% 320%;
+      animation: drift 22s ease-in-out infinite;
+    }
+
+    @keyframes drift {
+      0% { background-position: 0% 30%; }
+      50% { background-position: 100% 70%; }
+      100% { background-position: 0% 30%; }
+    }
+
+    /* Film grain overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      opacity: 0.1;
+      mix-blend-mode: overlay;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
     }
 
     .page {
       width: 100%;
       max-width: 480px;
+      background: var(--panel);
+      backdrop-filter: blur(28px) saturate(140%);
+      -webkit-backdrop-filter: blur(28px) saturate(140%);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 20px;
+      padding: 40px 28px 32px;
+      box-shadow: 0 30px 60px -24px rgba(20, 8, 14, 0.5);
     }
 
     /* --- Header --- */
@@ -67,15 +106,15 @@
     }
 
     .name em {
-      font-style: italic;
-      font-variation-settings: "SOFT" 100, "WONK" 1;
+      font-style: normal;
     }
 
     .eyebrow {
       font-size: 11px;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--ink-muted);
+      color: var(--ink);
+      opacity: 0.85;
       font-weight: 500;
     }
 
@@ -85,26 +124,28 @@
       align-items: center;
       gap: 16px;
       padding: 16px;
-      background: var(--bg-soft);
-      border: 1px solid var(--hairline);
-      border-radius: 4px;
+      background: var(--panel-strong);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--hairline-strong);
+      border-radius: 8px;
       text-decoration: none;
       color: inherit;
       margin-bottom: 48px;
-      transition: border-color 0.2s ease, transform 0.2s ease;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
     .release:hover {
-      border-color: var(--hairline-strong);
+      border-color: var(--accent);
+      box-shadow: 0 0 32px -10px var(--accent-deep);
     }
 
     .release-art {
       width: 72px;
       height: 72px;
-      background: #0F1512;
-      border-radius: 2px;
+      border-radius: 6px;
       flex-shrink: 0;
-      background-image: url('release-cover.jpg');
+      background-image: url('release-cover.jpg'), linear-gradient(135deg, var(--bg-1) 0%, var(--bg-3) 100%);
       background-size: cover;
       background-position: center;
     }
@@ -112,30 +153,37 @@
     .release-meta { flex: 1; min-width: 0; }
 
     .release-label {
+      display: inline-block;
+      background: var(--accent-deep);
+      color: var(--ink-on-accent);
+      padding: 3px 9px;
+      border-radius: 999px;
       font-size: 10px;
-      letter-spacing: 0.2em;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 6px;
-      font-weight: 600;
+      font-weight: 700;
+      margin-bottom: 8px;
     }
 
     .release-title {
       font-family: 'Fraunces', serif;
+      font-variation-settings: "SOFT" 60, "WONK" 1;
       font-size: 22px;
       line-height: 1.15;
-      font-weight: 400;
+      font-weight: 500;
       letter-spacing: -0.01em;
       margin-bottom: 4px;
+      color: var(--ink);
     }
 
     .release-sub {
       font-size: 13px;
-      color: var(--ink-muted);
+      color: var(--ink);
+      opacity: 0.75;
     }
 
     .release-arrow {
-      color: var(--ink-muted);
+      color: var(--ink);
       font-size: 20px;
       transition: transform 0.2s ease, color 0.2s ease;
     }
@@ -152,7 +200,8 @@
       font-size: 11px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      color: var(--ink-muted);
+      color: var(--ink);
+      opacity: 0.8;
       font-weight: 500;
       margin-bottom: 4px;
       padding-bottom: 12px;
@@ -169,12 +218,13 @@
       text-decoration: none;
       font-size: 16px;
       font-weight: 400;
-      transition: color 0.15s ease, padding-left 0.2s ease;
+      transition: color 0.15s ease, padding-left 0.2s ease, text-shadow 0.2s ease;
     }
 
     .link:hover {
-      color: var(--accent);
+      color: #FFF6E8;
       padding-left: 6px;
+      text-shadow: 0 0 14px var(--accent-deep), 0 0 28px var(--accent-magenta);
     }
 
     .link:hover .link-arrow {
@@ -183,23 +233,15 @@
     }
 
     .link-arrow {
-      color: var(--ink-muted);
+      color: var(--ink);
+      opacity: 0.7;
       font-size: 14px;
       transition: transform 0.2s ease, color 0.15s ease;
     }
 
-    /* --- Footer --- */
-    footer {
-      margin-top: 48px;
-      padding-top: 20px;
-      border-top: 1px solid var(--hairline);
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--ink-muted);
-    }
+    /* Last group: no trailing divider or gap under the final link */
+    .group:last-of-type { margin-bottom: 0; }
+    .group:last-of-type .link:last-child { border-bottom: none; }
 
     /* --- Accessibility & motion --- */
     a:focus-visible,
@@ -211,6 +253,7 @@
 
     @media (prefers-reduced-motion: reduce) {
       * { transition: none !important; }
+      body { animation: none !important; background-position: 35% 40% !important; }
     }
 
     /* --- Release platform picker --- */
@@ -230,15 +273,17 @@
       transform: translate(-50%, -50%);
       margin: 0;
       border: 1px solid var(--hairline-strong);
-      border-radius: 4px;
-      background: var(--bg-soft);
+      border-radius: 12px;
+      background: var(--panel-strong);
+      backdrop-filter: blur(28px) saturate(140%);
+      -webkit-backdrop-filter: blur(28px) saturate(140%);
       color: var(--ink);
       padding: 0;
       width: min(320px, calc(100% - 48px));
     }
 
     .platform-dialog::backdrop {
-      background: rgba(15, 21, 18, 0.7);
+      background: rgba(10, 6, 9, 0.6);
     }
 
     .platform-dialog-inner {
@@ -252,29 +297,32 @@
       font-family: 'Fraunces', serif;
       font-size: 18px;
       margin-bottom: 4px;
+      color: var(--ink);
     }
 
     .platform-option {
       display: block;
       padding: 14px 16px;
       border: 1px solid var(--hairline);
-      border-radius: 4px;
+      border-radius: 6px;
       color: var(--ink);
       text-decoration: none;
       font-size: 15px;
-      transition: border-color 0.15s ease, color 0.15s ease;
+      transition: border-color 0.15s ease, background 0.15s ease, text-shadow 0.2s ease;
     }
 
     .platform-option:hover {
       border-color: var(--accent);
-      color: var(--accent);
+      background: rgba(245, 234, 213, 0.05);
+      text-shadow: 0 0 12px var(--accent-deep);
     }
 
     .platform-dialog-close {
       margin-top: 4px;
       background: none;
       border: none;
-      color: var(--ink-muted);
+      color: var(--ink);
+      opacity: 0.7;
       font-size: 13px;
       cursor: pointer;
       padding: 8px 0 0;
@@ -282,7 +330,7 @@
     }
 
     .platform-dialog-close:hover {
-      color: var(--ink);
+      opacity: 1;
     }
   </style>
 </head>
@@ -290,7 +338,7 @@
   <main class="page">
     <header class="header">
       <h1 class="name">Chandler <em>Sedat</em></h1>
-      <p class="eyebrow">Musician · Denver, CO</p>
+      <p class="eyebrow">Musician</p>
     </header>
 
     <!-- Latest release card. Update title/art with each release; platform links live in the dialog below. -->
@@ -328,13 +376,6 @@
     </section>
 
     <section class="group">
-      <div class="group-label">Watch</div>
-      <a class="link" href="#" target="_blank" rel="noopener">
-        YouTube <span class="link-arrow" aria-hidden="true">↗</span>
-      </a>
-    </section>
-
-    <section class="group">
       <div class="group-label">Follow</div>
       <a class="link" href="https://www.instagram.com/seedat_music/?hl=en" target="_blank" rel="noopener">
         Instagram <span class="link-arrow" aria-hidden="true">↗</span>
@@ -343,11 +384,6 @@
         TikTok <span class="link-arrow" aria-hidden="true">↗</span>
       </a>
     </section>
-
-    <footer>
-      <span>© 2026 Chandler Sedat</span>
-      <span>Denver, CO</span>
-    </footer>
   </main>
 
   <script>
