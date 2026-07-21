@@ -393,9 +393,21 @@
     </section>
   </main>
 
+  <!-- Vercel Web Analytics (pageviews + unique visitors, cookieless) -->
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+
   <script>
     var releaseTrigger = document.getElementById('release-trigger');
     var releaseDialog = document.getElementById('release-dialog');
+
+    // Fire a custom event on every outbound link click, tagged with the
+    // platform label and which section (Listen / Watch / Follow) it sits in.
+    function track(name, data) {
+      if (typeof window.va === 'function') window.va('event', { name: name, data: data });
+    }
 
     releaseTrigger.addEventListener('click', function () {
       releaseDialog.showModal();
@@ -411,7 +423,19 @@
 
     releaseDialog.querySelectorAll('.platform-option').forEach(function (link) {
       link.addEventListener('click', function () {
+        track('release_click', { platform: link.textContent.trim() });
         releaseDialog.close();
+      });
+    });
+
+    document.querySelectorAll('a.link').forEach(function (link) {
+      link.addEventListener('click', function () {
+        var group = link.closest('.group');
+        var label = group ? group.querySelector('.group-label') : null;
+        track('link_click', {
+          platform: link.textContent.replace(/[↗→]/g, '').trim(),
+          section: label ? label.textContent.trim() : 'unknown'
+        });
       });
     });
   </script>
